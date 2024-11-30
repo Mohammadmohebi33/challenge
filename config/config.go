@@ -2,6 +2,11 @@ package config
 
 import "hotel_with_test/repository/mongo"
 
+type HTTPServer struct {
+	Port int
+}
+
 type Config struct {
-	mongo mongo.Config
+	Mongo      mongo.Config
+	HTTPServer HTTPServer
 }
