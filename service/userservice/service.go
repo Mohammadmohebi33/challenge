@@ -9,14 +9,24 @@ import (
 
 type UserRepository interface {
 	Insert(context.Context, entity.User) (entity.User, error)
+	GetUerByEmail(context.Context, string) (entity.User, error)
+}
+
+type AuthGenerator interface {
+	CreateAccessToken(user entity.User) (string, error)
+	CreateRefreshToken(user entity.User) (string, error)
 }
 
 type UserService struct {
+	auth AuthGenerator
 	repo UserRepository
 }
 
-func New(repo UserRepository) UserService {
-	return UserService{repo: repo}
+func New(auth AuthGenerator, repo UserRepository) UserService {
+	return UserService{
+		auth: auth,
+		repo: repo,
+	}
 }
 
 func getMD5Hash(text string) string {

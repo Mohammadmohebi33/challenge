@@ -6,4 +6,5 @@ func (h UserHandler) SetRoutes(e *fiber.App) {
 	userGroup := e.Group("/users")
 
 	userGroup.Post("/register", h.Register)
+	userGroup.Post("/login", h.Login)
 }

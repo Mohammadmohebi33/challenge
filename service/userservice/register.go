@@ -8,13 +8,13 @@ import (
 )
 
 func (receiver UserService) Register(request params.RegisterRequest) (params.RegisterResponse, error) {
-
+	fmt.Println(request.Password)
 	user := entity.User{
-		ID:                0,
-		Name:              request.Name,
-		Email:             request.Email,
-		EncryptedPassword: getMD5Hash(request.Password),
-		IsAdmin:           false,
+		ID:       0,
+		Name:     request.Name,
+		Email:    request.Email,
+		Password: getMD5Hash(request.Password),
+		IsAdmin:  false,
 	}
 
 	createdUser, err := receiver.repo.Insert(context.Background(), user)
