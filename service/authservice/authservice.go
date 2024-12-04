@@ -3,9 +3,8 @@ package authservice
 import (
 	"fmt"
 	"github.com/golang-jwt/jwt/v4"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"hotel_with_test/entity"
-	"os"
-	"strings"
 	"time"
 )
 
@@ -27,15 +26,15 @@ func New(cfg Config) Service {
 	}
 }
 
-func (s Service) CreateAccessToken(user entity.User) (string, error) {
+func (s Service) CreateAccessToken(user entity.MongoUser) (string, error) {
 	return s.createToken(user.ID, s.config.AccessSubject, s.config.AccessExpirationTime)
 }
 
-func (s Service) CreateRefreshToken(user entity.User) (string, error) {
+func (s Service) CreateRefreshToken(user entity.MongoUser) (string, error) {
 	return s.createToken(user.ID, s.config.RefreshSubject, s.config.RefreshExpirationTime)
 }
 
-func (s Service) createToken(userID int, subject string, expireDuration time.Duration) (string, error) {
+func (s Service) createToken(userID primitive.ObjectID, subject string, expireDuration time.Duration) (string, error) {
 
 	claims := jwt.MapClaims{
 		"id":  userID,
@@ -54,14 +53,12 @@ func (s Service) createToken(userID int, subject string, expireDuration time.Dur
 
 func (s Service) ParseToken(bearerToken string) (jwt.MapClaims, error) {
 
-	tokenStr := strings.Replace(bearerToken, "Bearer ", "", 1)
-
-	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.Parse(bearerToken, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			fmt.Println("invalid signing method", token.Header["alg"])
 			return nil, fmt.Errorf("invalid signing method")
 		}
-		secret := os.Getenv("JWT_SECRET")
+		secret := "jwt_secret"
 		return []byte(secret), nil
 	})
 

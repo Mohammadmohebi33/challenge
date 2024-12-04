@@ -8,13 +8,14 @@ import (
 )
 
 type UserRepository interface {
-	Insert(context.Context, entity.User) (entity.User, error)
-	GetUerByEmail(context.Context, string) (entity.User, error)
+	Insert(context.Context, entity.MongoUser) (entity.MongoUser, error)
+	GetUerByEmail(context.Context, string) (entity.MongoUser, error)
+	GetUserByID(ctx context.Context, userID interface{}) (entity.MongoUser, error)
 }
 
 type AuthGenerator interface {
-	CreateAccessToken(user entity.User) (string, error)
-	CreateRefreshToken(user entity.User) (string, error)
+	CreateAccessToken(user entity.MongoUser) (string, error)
+	CreateRefreshToken(user entity.MongoUser) (string, error)
 }
 
 type UserService struct {

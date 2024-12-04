@@ -1,9 +1,11 @@
 package entity
 
-type User struct {
-	ID       int
-	Name     string
-	Email    string
-	Password string
-	IsAdmin  bool
+import "go.mongodb.org/mongo-driver/bson/primitive"
+
+type MongoUser struct {
+	ID       primitive.ObjectID `bson:"_id,omitempty"` // ID به صورت ObjectID
+	Name     string             `bson:"name"`
+	Email    string             `bson:"email"`
+	Password string             `bson:"password"`
+	IsAdmin  bool               `bson:"isAdmin"`
 }

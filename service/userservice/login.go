@@ -12,10 +12,6 @@ func (s UserService) Login(req params.LoginRequest) (params.LoginResponse, error
 	if err != nil {
 		return params.LoginResponse{}, err
 	}
-
-	fmt.Println(user.Name, user.Email, user.Password)
-	fmt.Println(getMD5Hash(req.Password))
-
 	if user.Password != getMD5Hash(req.Password) {
 		return params.LoginResponse{}, fmt.Errorf("username or password isn't correct")
 	}
@@ -32,7 +28,6 @@ func (s UserService) Login(req params.LoginRequest) (params.LoginResponse, error
 
 	return params.LoginResponse{
 		User: params.UserInfo{
-			ID:    user.ID,
 			Email: user.Email,
 			Name:  user.Name,
 		},

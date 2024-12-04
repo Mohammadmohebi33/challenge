@@ -2,6 +2,7 @@ package userrepo
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"go.mongodb.org/mongo-driver/mongo"
 	"hotel_with_test/entity"
@@ -12,7 +13,7 @@ import (
 
 //	Insert(context.Context, entity.User) (entity.User, error)
 
-func (d *DB) Insert(ctx context.Context, user entity.User) (entity.User, error) {
+func (d *DB) Insert(ctx context.Context, user entity.MongoUser) (entity.MongoUser, error) {
 
 	collection := d.conn.Conn().Collection("users")
 
@@ -24,15 +25,15 @@ func (d *DB) Insert(ctx context.Context, user entity.User) (entity.User, error) 
 		"isAdmin":  false,
 	})
 	if err != nil {
-		return entity.User{}, err
+		return entity.MongoUser{}, err
 	}
 
 	// Return the inserted user
 	return user, nil
 }
 
-func (d *DB) GetUerByEmail(ctx context.Context, email string) (entity.User, error) {
-	var user entity.User
+func (d *DB) GetUerByEmail(ctx context.Context, email string) (entity.MongoUser, error) {
+	var user entity.MongoUser
 
 	collection := d.conn.Conn().Collection("users")
 
@@ -41,10 +42,34 @@ func (d *DB) GetUerByEmail(ctx context.Context, email string) (entity.User, erro
 	err := collection.FindOne(ctx, filter).Decode(&user)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			return entity.User{}, fmt.Errorf("user with email %s not found", email)
+			return entity.MongoUser{}, fmt.Errorf("user with email %s not found", email)
 		}
-		return entity.User{}, fmt.Errorf("failed to find user by email: %w", err)
+		return entity.MongoUser{}, fmt.Errorf("failed to find user by email: %w", err)
 	}
 
 	return user, nil
+}
+
+func (d *DB) GetUserByID(ctx context.Context, userID interface{}) (entity.MongoUser, error) {
+	id, ok := userID.(string)
+	if !ok {
+		return entity.MongoUser{}, errors.New("invalid userID type for MongoDB")
+	}
+
+	oid, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return entity.MongoUser{}, err
+	}
+	collection := d.conn.Conn().Collection("users")
+	filter := bson.M{"_id": oid}
+	var user entity.MongoUser
+	err = collection.FindOne(ctx, filter).Decode(&user)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return entity.MongoUser{}, fmt.Errorf("user with id %s not found", id)
+		}
+		return entity.MongoUser{}, fmt.Errorf("failed to find user by id: %w", err)
+	}
+	return user, nil
+
 }

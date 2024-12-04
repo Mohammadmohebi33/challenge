@@ -42,7 +42,7 @@ func main() {
 	userRepo := userrepo.New(mongoDb)
 	authService := authservice.New(cfg.Auth)
 	userService := userservice.New(authService, userRepo)
-	userHandler := userhandler.NewUserHandler(userService)
+	userHandler := userhandler.NewUserHandler(userService, authService, userRepo)
 
 	server := httpserver.NewServer(cfg, userHandler)
 	server.StartServer()
