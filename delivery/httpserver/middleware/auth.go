@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"errors"
-	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"hotel_with_test/repository/mongo/userrepo"
 	"hotel_with_test/service/authservice"
@@ -18,7 +17,6 @@ func Auth(auth authservice.Service, userStore *userrepo.DB) fiber.Handler {
 		}
 		token := strings.Replace(headers[0], "Bearer ", "", 1)
 
-		fmt.Println(token)
 		clams, err := auth.ParseToken(token)
 		if err != nil {
 			return err
