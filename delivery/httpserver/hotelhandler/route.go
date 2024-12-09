@@ -9,4 +9,6 @@ func (h HotelHandler) SetRoute(e *fiber.App) {
 	userGroup := e.Group("/hotel", middleware.Auth(h.authService, h.UserStore))
 
 	userGroup.Post("/create", h.Create)
+	userGroup.Get("/get/:id", h.GetHotel)
+	userGroup.Get("/get", h.GetAllHotels)
 }

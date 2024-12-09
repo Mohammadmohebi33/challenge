@@ -32,7 +32,7 @@ func main() {
 	cfg := config.Config{
 		Mongo: mongoConfig,
 		HTTPServer: config.HTTPServer{
-			Port: 8081,
+			Port: 8080,
 		},
 		Auth: authConfig,
 	}
