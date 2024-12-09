@@ -4,18 +4,17 @@ import (
 	"hotel_with_test/config"
 	"hotel_with_test/delivery/httpserver"
 	"hotel_with_test/delivery/httpserver/hotelhandler"
+	"hotel_with_test/delivery/httpserver/roomhandler"
 	"hotel_with_test/delivery/httpserver/userhandler"
 	"hotel_with_test/repository/mongo"
 	"hotel_with_test/repository/mongo/hotelrepo"
+	"hotel_with_test/repository/mongo/roomrepo"
 	"hotel_with_test/repository/mongo/userrepo"
 	"hotel_with_test/service/authservice"
 	"hotel_with_test/service/hotelservice"
+	"hotel_with_test/service/roomservice"
 	"hotel_with_test/service/userservice"
 )
-
-func process(f func(int) int, num int) int {
-	return f(num)
-}
 
 func main() {
 
@@ -48,13 +47,17 @@ func main() {
 
 	userRepo := userrepo.New(mongoDb)
 	hotelRepo := hotelrepo.New(mongoDb)
+	roomRepo := roomrepo.New(mongoDb)
+
 	authService := authservice.New(cfg.Auth)
 	userService := userservice.New(authService, userRepo)
 	hotelService := hotelservice.NewHotelService(hotelRepo)
+	roomService := roomservice.NewHotelService(roomRepo)
 
 	userHandler := userhandler.NewUserHandler(userService, authService, userRepo)
 	hotelHandler := hotelhandler.New(hotelService, authService, userRepo)
+	roomHandler := roomhandler.New(roomService, authService, userRepo)
 
-	server := httpserver.NewServer(cfg, userHandler, hotelHandler)
+	server := httpserver.NewServer(cfg, userHandler, hotelHandler, roomHandler)
 	server.StartServer()
 }
