@@ -13,6 +13,10 @@ import (
 	"hotel_with_test/service/userservice"
 )
 
+func process(f func(int) int, num int) int {
+	return f(num)
+}
+
 func main() {
 
 	mongoConfig := mongo.Config{
