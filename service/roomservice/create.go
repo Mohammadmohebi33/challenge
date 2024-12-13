@@ -22,6 +22,11 @@ func (s RoomService) CreateRoom(ctx context.Context, req params.CreateRoomReques
 		return params.CreateRoomResponse{}, err
 	}
 
+	err = s.repo.UpdateHotel(ctx, resp.HotelID.Hex(), resp.ID.Hex())
+	if err != nil {
+		return params.CreateRoomResponse{}, err
+	}
+
 	return params.CreateRoomResponse{
 		ID:        resp.ID,
 		Size:      resp.Size,

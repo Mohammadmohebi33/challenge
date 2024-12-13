@@ -15,6 +15,10 @@ func (d *DB) Insert(ctx context.Context, hotel entity.Hotel) (entity.Hotel, erro
 	user := ctx.Value("user").(entity.MongoUser)
 	collection := d.conn.Conn().Collection("hotels")
 
+	if hotel.Rooms == nil {
+		hotel.Rooms = []primitive.ObjectID{}
+	}
+
 	_, err := collection.InsertOne(ctx, bson.M{
 		"_id":      hotel.ID,
 		"name":     hotel.Name,
@@ -76,4 +80,35 @@ func (d *DB) GetAllHotels(ctx context.Context) ([]entity.Hotel, error) {
 	}
 
 	return hotels, nil
+}
+
+//GetRoomsByHotelID(context.Context, string) ([]entity.Room, error)
+
+func (d *DB) GetRoomsByHotelID(ctx context.Context, id string) ([]entity.Room, error) {
+	var rooms []entity.Room
+	collection := d.conn.Conn().Collection("rooms")
+
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return rooms, fmt.Errorf("invalid id format: %w", err)
+	}
+
+	findOptions := options.Find()
+	cursor, err := collection.Find(ctx, bson.M{"_id": objectID}, findOptions)
+	if err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+		}
+	}
+	defer cursor.Close(ctx)
+	for cursor.Next(ctx) {
+		var room entity.Room
+		if err := cursor.Decode(&room); err != nil {
+			return rooms, err
+		}
+		rooms = append(rooms, room)
+	}
+	if err := cursor.Err(); err != nil {
+		return rooms, err
+	}
+	return rooms, nil
 }

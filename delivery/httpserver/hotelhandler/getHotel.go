@@ -20,3 +20,12 @@ func (h HotelHandler) GetAllHotels(c *fiber.Ctx) error {
 	}
 	return c.JSON(hotels)
 }
+
+func (h HotelHandler) GetHotelsRoom(c *fiber.Ctx) error {
+	hotelID := c.Params("hotelId")
+	rooms, err := h.hotelService.GetRooms(c.Context(), hotelID)
+	if err != nil {
+		return err
+	}
+	return c.JSON(rooms)
+}

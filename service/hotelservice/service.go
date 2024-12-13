@@ -9,6 +9,7 @@ type HotelRepository interface {
 	Insert(context.Context, entity.Hotel) (entity.Hotel, error)
 	GetHotelByID(context.Context, string) (entity.Hotel, error)
 	GetAllHotels(context.Context) ([]entity.Hotel, error)
+	GetRoomsByHotelID(context.Context, string) ([]entity.Room, error)
 }
 
 type HotelService struct {

@@ -20,3 +20,11 @@ func (s HotelService) GetAllHotel(ctx context.Context) ([]entity.Hotel, error) {
 	}
 	return hotels, nil
 }
+
+func (s HotelService) GetRooms(ctx context.Context, id string) ([]entity.Room, error) {
+	rooms, err := s.repo.GetRoomsByHotelID(ctx, id)
+	if err != nil {
+		return []entity.Room{}, err
+	}
+	return rooms, nil
+}
