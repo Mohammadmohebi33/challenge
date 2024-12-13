@@ -4,6 +4,7 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"hotel_with_test/entity"
 )
 
@@ -48,4 +49,32 @@ func (d *DB) UpdateHotel(ctx context.Context, hotelID string, roomID string) err
 		return err
 	}
 	return nil
+}
+
+func (d *DB) GetAll(ctx context.Context) ([]entity.Room, error) {
+
+	var rooms []entity.Room
+	collection := d.conn.Conn().Collection("rooms")
+
+	findOptions := options.Find()
+
+	cursor, err := collection.Find(ctx, bson.M{}, findOptions)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	for cursor.Next(ctx) {
+		var room entity.Room
+		if err := cursor.Decode(&room); err != nil {
+			return nil, err
+		}
+		rooms = append(rooms, room)
+	}
+
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return rooms, nil
 }

@@ -8,6 +8,7 @@ import (
 type RoomRepository interface {
 	Insert(context.Context, entity.Room) (entity.Room, error)
 	UpdateHotel(context.Context, string, string) error
+	GetAll(context.Context) ([]entity.Room, error)
 }
 
 type RoomService struct {

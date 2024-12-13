@@ -82,8 +82,6 @@ func (d *DB) GetAllHotels(ctx context.Context) ([]entity.Hotel, error) {
 	return hotels, nil
 }
 
-//GetRoomsByHotelID(context.Context, string) ([]entity.Room, error)
-
 func (d *DB) GetRoomsByHotelID(ctx context.Context, id string) ([]entity.Room, error) {
 	var rooms []entity.Room
 	collection := d.conn.Conn().Collection("rooms")

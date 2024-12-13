@@ -7,5 +7,5 @@ type Room struct {
 	Size      string             `bson:"size" json:"size"`
 	BasePrice float64            `bson:"basePrice" json:"basePrice"`
 	Price     float64            `bson:"price" json:"price"`
-	HotelID   primitive.ObjectID `bson:"hotelId,omitempty" json:"hotelId,omitempty"`
+	HotelID   primitive.ObjectID `bson:"hotelID,omitempty" json:"hotelId,omitempty"`
 }

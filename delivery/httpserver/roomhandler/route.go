@@ -9,5 +9,6 @@ func (h RoomHandler) SetRoute(e *fiber.App) {
 	roomGroup := e.Group("/room", middleware.Auth(h.authService, h.UserStore))
 
 	roomGroup.Post("/create", h.Create)
+	roomGroup.Get("/all", h.GetAll)
 
 }
