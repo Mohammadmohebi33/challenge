@@ -4,29 +4,37 @@ import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"hotel_with_test/config"
+	"hotel_with_test/delivery/httpserver/bookinghandler"
 	"hotel_with_test/delivery/httpserver/hotelhandler"
 	"hotel_with_test/delivery/httpserver/roomhandler"
 	"hotel_with_test/delivery/httpserver/userhandler"
 )
 
 type Server struct {
-	config       config.Config
-	userHandler  userhandler.UserHandler
-	hotelHandler hotelhandler.HotelHandler
-	roomHandler  roomhandler.RoomHandler
-	Router       *fiber.App
+	config         config.Config
+	userHandler    userhandler.UserHandler
+	hotelHandler   hotelhandler.HotelHandler
+	roomHandler    roomhandler.RoomHandler
+	bookingHandler bookinghandler.BookingHandler
+	Router         *fiber.App
 }
 
-func NewServer(config config.Config, userHandler userhandler.UserHandler, hotelHandler hotelhandler.HotelHandler, roomHandler roomhandler.RoomHandler) Server {
+func NewServer(config config.Config,
+	userHandler userhandler.UserHandler,
+	hotelHandler hotelhandler.HotelHandler,
+	roomHandler roomhandler.RoomHandler,
+	bookingHandler bookinghandler.BookingHandler,
+) Server {
 
 	app := fiber.New(fiber.Config{})
 
 	return Server{
-		config:       config,
-		userHandler:  userHandler,
-		hotelHandler: hotelHandler,
-		roomHandler:  roomHandler,
-		Router:       app,
+		config:         config,
+		userHandler:    userHandler,
+		hotelHandler:   hotelHandler,
+		roomHandler:    roomHandler,
+		bookingHandler: bookingHandler,
+		Router:         app,
 	}
 }
 
@@ -36,6 +44,7 @@ func (receiver Server) StartServer() {
 	receiver.userHandler.SetRoutes(receiver.Router)
 	receiver.hotelHandler.SetRoute(receiver.Router)
 	receiver.roomHandler.SetRoute(receiver.Router)
+	receiver.bookingHandler.SetRoute(receiver.Router)
 
 	// Start server
 	address := fmt.Sprintf(":%d", receiver.config.HTTPServer.Port)
